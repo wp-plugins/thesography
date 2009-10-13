@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: exif, iptc, photos, photographs, photoblog
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 Thesography displays EXIF data for images and enables import of latitude and longitude EXIF to the database.
 
@@ -39,6 +39,10 @@ Not at this time, but if you have a theme that you think should be integrated pl
 2. Each post can have its own EXIF items displayed.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed errors regarding foreach and string arguments when no image is attached.
+* EXIF added automatically to syndication feeds when Thesis automatic insertion is used.
 
 = 1.0 =
 * Displays message to visit options page if trying to write a post before options have been saved, to avoid PHP errors.
