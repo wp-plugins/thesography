@@ -4,7 +4,7 @@ Plugin Name: Thesography
 Plugin URI: http://www.kristarella.com/thesography
 Description: Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload. <strong>Please visit the <a href="options-general.php?page=thesography">Thesography Options</a> before use.</strong>
 Author: kristarella
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.kristarella.com
 */
 
@@ -89,11 +89,12 @@ if ($get_options) {
 		$get_options[$key] = stripslashes($value);
 	}
 	extract($get_options);
-} else {
+}
+else {
 	echo '<strong>Please visit the <a href="options-general.php?page=thesography">Thesography Options</a> before use.</strong>';
 }
 
-// verify this came from the our screen and with proper authorization,
+// verify this came from our screen and with proper authorization,
 // because save_post can be triggered at other times
 if (!wp_verify_nonce($_POST['thesography_noncename'], 'thesography_nonce' ))
 	return $post_id;
@@ -171,6 +172,7 @@ $set_exif = $exif_fields;
 ?>
 	<div class="wrap">
 	<h2>Thesography Options</h2>
+	<p>For instructions and support please visit the <a target="_blank" href="http://www.kristarella.com/thesography">Thesography plugin page</a>.</p>
 		<form method="post" action="" id="thesography_options">
 			<input type="hidden" name="options_saved" value="1">
 			<h3>Default EXIF to display</h3>
@@ -307,16 +309,24 @@ if ($get_options) {
 			'orderby' => 'ID',
 			'order' => 'ASC'
 			));
-		foreach ($images as $image) {
-			$imgID = $image->ID;
+		if ($images) {
+			foreach ($images as $image) {
+				$imgID = $image->ID;
+			}
 		}
 	}
 
 	$imgmeta = wp_get_attachment_metadata($imgID);
 
+if ($imgmeta) :
+
+if ($imgmeta['image_meta']['latitude'])
 	$latitude = $imgmeta['image_meta']['latitude'];
+if ($imgmeta['image_meta']['longitude'])
 	$longitude = $imgmeta['image_meta']['longitude'];
+if ($imgmeta['image_meta']['latitude_ref'])
 	$lat_ref = $imgmeta['image_meta']['latitude_ref'];
+if ($imgmeta['image_meta']['longitude_ref'])
 	$lng_ref = $imgmeta['image_meta']['longitude_ref'];
 	$lat = geo_single_fracs2dec($latitude);
 	$lng = geo_single_fracs2dec($longitude);
@@ -381,6 +391,7 @@ if ($get_options) {
 	$exif_list .= $after_block;
 	
 	return $exif_list;
+endif;
 }
 
 
@@ -436,11 +447,22 @@ function thesography_display_exif() {
 			'order' => 'ASC'
 			));
 		if ($images) {
-		foreach ($images as $image) {
-			$imgID = $image->ID;
-			echo display_exif($exif_options,$imgID);
-		}
+			foreach ($images as $image) {
+				$imgID = $image->ID;
+				echo display_exif($exif_options,$imgID);
+			}
 		}
 	}
 }
 add_action('thesis_hook_after_post','thesography_display_exif',1);
+// via options in Thesis to RSS feed
+function thesography_display_exif_feed($content) {
+global $thesis;
+global $post;
+$exif_options = get_post_meta($post->ID, '_use_exif', true);
+	if (is_feed() && $thesis && $exif_options)
+			return $content . display_exif();
+	else
+		return $content;
+}
+add_filter('the_content', 'thesography_display_exif_feed');
