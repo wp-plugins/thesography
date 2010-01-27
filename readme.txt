@@ -3,8 +3,8 @@ Contributors: kristarella
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7439094
 Tags: exif, iptc, photos, photographs, photoblog
 Requires at least: 2.7
-Tested up to: 2.8.4
-Stable tag: 1.0.1
+Tested up to: 2.9.1
+Stable tag: 1.0.2
 
 Thesography displays EXIF data for images and enables import of latitude and longitude EXIF to the database.
 
@@ -39,6 +39,10 @@ Not at this time, but if you have a theme that you think should be integrated pl
 2. Each post can have its own EXIF items displayed.
 
 == Changelog ==
+
+= 1.0.2 =
+* Fixed bug for new installs on WP2.9.1
+* Added languages directory with localisation files
 
 = 1.0.1 =
 * Fixed errors regarding foreach and string arguments when no image is attached.
