@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Thesography\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-27 19:27+1000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Kristen Symonds <kristarella@gmail.com>\n"
+"Language-Team:  <kristarella@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: AUSTRALIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: thesography.php:40
+msgid "Add EXIF to post"
+msgstr ""
+
+#: thesography.php:62
+#: thesography.php:97
+#: thesography.php:303
+msgid "Please visit the <a href=\"options-general.php?page=thesography\">Thesography Options</a> before use."
+msgstr ""
+
+#: thesography.php:73
+msgid "If there is a photo attached to this post, the following details may be added to the end of the post."
+msgstr ""
+
+#: thesography.php:164
+msgid "Options saved!"
+msgstr ""
+
+#: thesography.php:177
+msgid "Thesography Options"
+msgstr ""
+
+#: thesography.php:178
+msgid "For instructions and support please visit the <a target=\"_blank\" href=\"http://www.kristarella.com/thesography\">Thesography plugin page</a>."
+msgstr ""
+
+#: thesography.php:181
+msgid "Default EXIF to display"
+msgstr ""
+
+#: thesography.php:182
+msgid "Set these to create default options for every post. This is useful when <strong>most</strong> of your posts will be displaying EXIF for <strong>a single photo</strong>, and if you're not adding EXIF manually via shortcodes or custom functions."
+msgstr ""
+
+#: thesography.php:184
+msgid "Your Custom HTML"
+msgstr ""
+
+#: thesography.php:185
+msgid "This is the HTML used to display your exif data. IDs and classes can be used for styling."
+msgstr ""
+
+#: thesography.php:186
+msgid "Before EXIF block"
+msgstr ""
+
+#: thesography.php:188
+msgid "Before EXIF item"
+msgstr ""
+
+#: thesography.php:190
+msgid "After EXIF item"
+msgstr ""
+
+#: thesography.php:192
+msgid "After EXIF block"
+msgstr ""
+
+#: thesography.php:194
+msgid "Separator for EXIF label"
+msgstr ""
+
+#: thesography.php:196
+msgid "Link GEO EXIF to Google Maps"
+msgstr ""
+
+#: thesography.php:199
+msgid "Save Changes"
+msgstr ""
+
+#: thesography.php:214
+#: thesography.php:347
+msgid "Aperture"
+msgstr ""
+
+#: thesography.php:216
+#: thesography.php:350
+msgid "Credit"
+msgstr ""
+
+#: thesography.php:218
+#: thesography.php:353
+msgid "Camera"
+msgstr ""
+
+#: thesography.php:220
+#: thesography.php:356
+msgid "Caption"
+msgstr ""
+
+#: thesography.php:222
+msgid "Creation time"
+msgstr ""
+
+#: thesography.php:224
+#: thesography.php:362
+msgid "Copyright"
+msgstr ""
+
+#: thesography.php:226
+#: thesography.php:365
+msgid "Focal length"
+msgstr ""
+
+#: thesography.php:228
+#: thesography.php:368
+msgid "ISO"
+msgstr ""
+
+#: thesography.php:230
+#: thesography.php:371
+msgid "Location"
+msgstr ""
+
+#: thesography.php:232
+#: thesography.php:374
+msgid "Shutter speed"
+msgstr ""
+
+#: thesography.php:234
+#: thesography.php:393
+msgid "Title"
+msgstr ""
+
+#: thesography.php:359
+msgid "Taken"
+msgstr ""
+
