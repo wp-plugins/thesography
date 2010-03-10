@@ -4,7 +4,7 @@ Plugin Name: Thesography
 Plugin URI: http://www.kristarella.com/thesography
 Description: Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload. <strong>Please visit the <a href="options-general.php?page=thesography">Thesography Options</a> before use.</strong>
 Author: kristarella
-Version: 1.0.3
+Version: 1.0.3.1
 Author URI: http://www.kristarella.com
 */
 
@@ -469,7 +469,6 @@ function thesis_display_exif() {
 			foreach ($images as $image) {
 				$imgID = $image->ID;
 				echo display_exif($exif_options,$imgID);
-				echo $get_options;
 			}
 		}
 	}
