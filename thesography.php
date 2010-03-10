@@ -4,7 +4,7 @@ Plugin Name: Thesography
 Plugin URI: http://www.kristarella.com/thesography
 Description: Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload. <strong>Please visit the <a href="options-general.php?page=thesography">Thesography Options</a> before use.</strong>
 Author: kristarella
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.kristarella.com
 */
 
@@ -25,9 +25,10 @@ Author URI: http://www.kristarella.com
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// === LANGUAGE FILE === //
-$plugin_url = WP_PLUGIN_URL . '/' . str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . '/';
-load_plugin_textdomain('thesography', "$plugin_url");
+
+// load language files
+load_plugin_textdomain('thesography', false, 'thesography/languages');
+
 
 // === EDIT POST OPTIONS === //
 /*
@@ -145,6 +146,7 @@ add_action('admin_menu', 'thesography_admin');
 */
 function thesography_options() {
 global $wpdb;
+global $thesis;
 $defaults = array(
 	'before_block' => '<ul class="exif">',
 	'before_item' => '<li>',
@@ -171,6 +173,7 @@ foreach ($get_options as $key => $value) {
 }
 extract($get_options);
 $set_exif = $exif_fields;
+$insert = $auto_insert;
 
 ?>
 	<div class="wrap">
@@ -180,7 +183,16 @@ $set_exif = $exif_fields;
 			<input type="hidden" name="options_saved" value="1">
 			<h3><?php _e('Default EXIF to display', 'thesography'); ?></h3>
 			<p><?php _e("Set these to create default options for every post. This is useful when <strong>most</strong> of your posts will be displaying EXIF for <strong>a single photo</strong>, and if you're not adding EXIF manually via shortcodes or custom functions.", 'thesography'); ?></p>
-				<?php exif_checklist($set_exif); ?>
+<?php
+				exif_checklist($set_exif);
+		if ($thesis) :
+?>
+			<h3><?php _e('Thesis Related Options', 'thesography'); ?></h3>
+			<p><input id="auto_insert" value="manual" type="checkbox" name="auto_insert" <?php if($insert == 'manual') echo 'checked="checked"'; ?> />
+			<label for="auto_insert" class="alignnone"><?php _e('Check this to <strong>turn off</strong> auto insert in Thesis', 'thesography'); ?></label></p>
+<?php			
+		endif;
+?>
 			<h3><?php _e('Your Custom HTML', 'thesography'); ?></h3>
 			<p><?php _e('This is the HTML used to display your exif data. IDs and classes can be used for styling.', 'thesography'); ?></p>
 				<p><label for="before_block"><?php _e('Before EXIF block', 'thesography'); ?></label>
@@ -248,9 +260,9 @@ function admin_register_head() {
 add_action('admin_head', 'admin_register_head');
 
 
-
 // === ADD GEO EXIF TO DATABASE === //
 function add_geo_exif($meta,$file,$sourceImageType) {
+	if ( is_callable('exif_read_data') && in_array($sourceImageType, apply_filters('wp_read_image_metadata_types', array(IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM)) ) ) {
 		$exif = @exif_read_data( $file );
 			if (!empty($exif['GPSLatitude']))
 				$meta['latitude'] = $exif['GPSLatitude'] ;
@@ -262,6 +274,7 @@ function add_geo_exif($meta,$file,$sourceImageType) {
 				$meta['longitude_ref'] = trim( $exif['GPSLongitudeRef'] );
 	
 	return $meta;
+	}
 }
 add_filter('wp_read_image_metadata', 'add_geo_exif','',3);
 
@@ -436,11 +449,14 @@ function exif_shortcode($atts, $content = null) {
 add_shortcode('exif','exif_shortcode');
 
 // via options in Thesis
-function thesography_display_exif() {
+function thesis_display_exif() {
 	global $post;
 	$exif_options = get_post_meta($post->ID, '_use_exif', true);
+	
+	$get_options = maybe_unserialize(get_option('thesography_options'));
+	$insert = $get_options['auto_insert'];
 
-	if ($exif_options) {
+	if ($exif_options && ($insert !== 'manual')) {
 		$images = get_children(array(
 			'post_parent' => $post->ID,
 			'post_type' => 'attachment',
@@ -453,13 +469,14 @@ function thesography_display_exif() {
 			foreach ($images as $image) {
 				$imgID = $image->ID;
 				echo display_exif($exif_options,$imgID);
+				echo $get_options;
 			}
 		}
 	}
 }
-add_action('thesis_hook_after_post','thesography_display_exif',1);
+add_action('thesis_hook_after_post','thesis_display_exif',1);
 // via options in Thesis to RSS feed
-function thesography_display_exif_feed($content) {
+function thesis_display_exif_feed($content) {
 global $thesis;
 global $post;
 $exif_options = get_post_meta($post->ID, '_use_exif', true);
@@ -468,4 +485,4 @@ $exif_options = get_post_meta($post->ID, '_use_exif', true);
 	else
 		return $content;
 }
-add_filter('the_content', 'thesography_display_exif_feed');
+add_filter('the_content', 'thesis_display_exif_feed');
