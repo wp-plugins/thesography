@@ -12,7 +12,7 @@ Thesography displays EXIF data for images and enables import of latitude and lon
 
 Thesography displays EXIF data for images uploaded with WordPress. It utilises WordPress’ own feature of storing EXIF fields in the database, and also enables import of latitude and longitude EXIF to the database upon image upload.
 
-The purpose of this plugin is to make dislaying EXIF data as convenient as possible, while using as much of WordPress’ native image handling as possible.
+The purpose of this plugin is to make dislaying EXIF data as convenient as possible, while using as much of WordPress' native image handling as possible.
 
 EXIF can be displayed via a shortcode, via a function in your theme files and it can be inserted automatically into the Thesis theme from DIYthemes.
 
