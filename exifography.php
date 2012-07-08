@@ -217,11 +217,33 @@ if (!class_exists("exifography")) {
 			global $post;
 			$options = $this->get_options();
 			$post_options = get_post_meta($post->ID, '_use_exif', true);
-			if ($display == null && $post_options) {
-				unset($options['exif_fields']);
+			// use specified options
+			if (!is_null($display)) {
+				if (isset($options['exif_fields']))
+					$options['exif_fields'] = array();
+				$display = explode(',',$display);
+				foreach ($display as $field)
+					$options['exif_fields'][] = $field;
+			}
+			// or use post options
+			elseif (is_null($display) && $post_options) {
+				if (isset($options['exif_fields']))
+					$options['exif_fields'] = array();
 				$post_options = explode(',',$post_options);
 				foreach ($post_options as $field)
 					$options['exif_fields'][] = $field;
+			}
+			
+			// in case there are thesograhy format options
+			$old_fields = array(
+				'time' => 'created_timestamp',
+				'copy' => 'copyright',
+				'focus' => 'focal_length',
+				'shutter' => 'shutter_speed',
+			);
+			foreach ($old_fields as $key=>$value) {
+				if (in_array($key,$options['exif_fields']))
+					$options['exif_fields'][] = $value;
 			}
 
 			if (is_null($imgID)) {
@@ -252,6 +274,8 @@ if (!class_exists("exifography")) {
 						$exif = date($options['timestamp'],$imgmeta['image_meta']['created_timestamp']);
 					elseif ($key == 'flash')
 						$exif = $this->flash_fired($imgmeta);
+					elseif ($key == 'focal_length' && !$imgmeta['image_meta'][$key] == 0)
+						$exif = $imgmeta['image_meta'][$key] . __('mm','exifography');
 					elseif ($key == 'location')
 						$exif = $this->display_geo($imgmeta);
 					elseif ($key == 'shutter_speed' && !$imgmeta['image_meta'][$key] == 0)
@@ -260,11 +284,11 @@ if (!class_exists("exifography")) {
 						$exif = $imgmeta['image_meta'][$key];
 					
 					if ($exif)
-						$output[$key] = $options['before_item'] . $value . $options['sep'] . $exif . $options['after_item'];
+						$output[$key] = stripslashes($options['before_item']) . $value . stripslashes($options['sep']) . $exif . stripslashes($options['after_item']);
 				}
 			}
 			$output = apply_filters('exifography_display_exif',$output,$post->ID,$imgID);
-			$output = $options['before_block'] . implode('',$output) . $options['after_block'];
+			$output = stripslashes($options['before_block']) . implode('',$output) . stripslashes($options['after_block']);
 			return $output;
 			endif;
 		}
@@ -312,7 +336,7 @@ if (!class_exists("exifography")) {
 		//auto insert
 		function auto_insert($content) {
 			$options = $this->get_options();
-			if (isset($options['auto_insert']) && (is_single() || is_feed()))
+			if (isset($options['auto_insert']) && (!is_page()))
 				return $content . $this->display_exif();
 			else
 				return $content;
@@ -568,13 +592,13 @@ if (isset($exif_plugin)) {
 }
 
 // use this to manually insert the exif output in your theme
-function exifography_display_exif() {
+function exifography_display_exif($fields,$imgID) {
 	if (class_exists('exifography')) {
 		$exif = new exifography();
-		return $exif->display_exif();
+		return $exif->display_exif($fields,$imgID);
 	}
 }
 // this is deprecated don't use it anymore, use exifography_display_exif() instead
-function display_exif() {
-	return exifography_display_exif();
+function display_exif($fields,$imgID) {
+	return exifography_display_exif($fields,$imgID);
 }
