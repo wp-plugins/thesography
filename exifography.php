@@ -218,7 +218,7 @@ if (!class_exists("exifography")) {
 			$options = $this->get_options();
 			$post_options = get_post_meta($post->ID, '_use_exif', true);
 			// use specified options
-			if (!is_null($display)) {
+			if (!(is_null($display) || $display == '')) {
 				if (isset($options['exif_fields']))
 					$options['exif_fields'] = array();
 				$display = explode(',',$display);
@@ -226,7 +226,7 @@ if (!class_exists("exifography")) {
 					$options['exif_fields'][] = $field;
 			}
 			// or use post options
-			elseif (is_null($display) && $post_options) {
+			elseif ((is_null($display) || $display == '') && $post_options) {
 				if (isset($options['exif_fields']))
 					$options['exif_fields'] = array();
 				$post_options = explode(',',$post_options);
