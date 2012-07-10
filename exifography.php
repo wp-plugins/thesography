@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1
+Version: 1.1.1
 Author URI: http://www.kristarella.com
 */
 
@@ -29,9 +29,11 @@ if (!class_exists("exifography")) {
 	class exifography {
 		var $exif_options = 'exifography_options';
 		public $fields = array();
-		private $html_options = array();
+		public $html_options = array();
 
 		public function __construct() {
+			$this->load_plugin_textdomain();
+			
 			$this->fields = array(
 				'aperture' => __('Aperture', 'exifography'),
 				'credit' => __('Credit', 'exifography'),
@@ -54,7 +56,15 @@ if (!class_exists("exifography")) {
 				'after_block' => __('After EXIF block', 'exifography'),
 				'sep' => __('Separator for EXIF label', 'exifography'),
 			);
+		}
 		
+		public function load_plugin_textdomain() {
+		    $domain = 'exifography';
+		    // The "plugin_locale" filter is also used in load_plugin_textdomain()
+		    $locale = apply_filters('plugin_locale', get_locale(), $domain);
+		 
+		    load_textdomain($domain, WP_LANG_DIR.$domain.'-'.$locale.'.mo');
+		    load_plugin_textdomain($domain, FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 		}
 
 		// === ADD EXTRA EXIF TO DATABASE === //
@@ -582,8 +592,6 @@ if (isset($exif_plugin)) {
 	add_action('add_meta_boxes', array($exif_plugin, 'add_post_box'));
 	add_action('save_post', array($exif_plugin, 'save_postdata'));
 	add_shortcode('exif',array($exif_plugin, 'shortcode'));
-	// load language files
-	load_plugin_textdomain('exifography', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
 	// filters
 	add_filter('plugin_action_links_'.plugin_basename(__FILE__), array($exif_plugin, 'plugin_links'));
 	add_filter('wp_read_image_metadata', array($exif_plugin, 'add_exif'),'',3);
