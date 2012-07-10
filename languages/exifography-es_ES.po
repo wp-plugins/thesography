@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Exifography 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-07 23:55+1000\n"
-"PO-Revision-Date: 2012-07-10 10:32+1000\n"
+"PO-Revision-Date: 2012-07-10 10:45+1000\n"
 "Last-Translator: Kristen Symonds <kristarella@gmail.com>\n"
 "Language-Team:  <kristarella@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Rango de exposición"
 
 #: exifography.php:43
 msgid "Flash fired"
-msgstr "Flash disparado:"
+msgstr "Flash disparado"
 
 #: exifography.php:44
 msgid "Focal length"
