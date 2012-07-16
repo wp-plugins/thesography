@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: exif, iptc, photos, photographs, photoblog
 Requires at least: 3.2
 Tested up to: 3.4.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 
 Exifography displays EXIF data for images and enables import of latitude and longitude EXIF to the database.
 
@@ -49,6 +49,10 @@ See the above answer.
 2. Each post can have its own EXIF items displayed.
 
 == Changelog ==
+
+= 1.1.2 = Fixed show "all" parameter and minor spanish translation fix.
+
+= 1.1.1 = Fixed broken language localisation
 
 = 1.1 = Completely rewritten for efficiency and to use the WordPress Settings API. Added flash fired import and display, and map thumbnail display.
 

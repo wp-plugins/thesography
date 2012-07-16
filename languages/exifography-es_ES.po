@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Exifography 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-07 23:55+1000\n"
-"PO-Revision-Date: 2012-07-10 10:45+1000\n"
+"PO-Revision-Date: 2012-07-12 10:29+1000\n"
 "Last-Translator: Kristen Symonds <kristarella@gmail.com>\n"
 "Language-Team:  <kristarella@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgstr "Mostrar el thumb del mapa en vez de las coordenadas de localización"
 
 #: exifography.php:363
 msgid "Map zoom (0 is the widest, 21 is close)"
-msgstr "Zoom del mapa (0 es lo más ancho, 21 lo mas pequeño)"
+msgstr "Zoom del mapa (0 es lo más ancho, 21 lo más pequeño)"
 
 #: exifography.php:364
 msgid "Map width"
