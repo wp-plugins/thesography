@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.2
+Version: 1.1.2.1
 Author URI: http://www.kristarella.com
 */
 
@@ -231,8 +231,8 @@ if (!class_exists("exifography")) {
 			if (!(is_null($display) || $display == '')) {
 				if (isset($options['exif_fields']))
 					$options['exif_fields'] = array();
-				$display = explode(',',$display);
-				foreach ($display as $field)
+				$user_defined = explode(',',$display);
+				foreach ($user_defined as $field)
 					$options['exif_fields'][] = $field;
 			}
 			// or use post options
@@ -256,7 +256,7 @@ if (!class_exists("exifography")) {
 					$options['exif_fields'][] = $value;
 			}
 
-			if (is_null($imgID)) {
+			if (!$imgID) {
 				$images = get_children(array(
 					'post_parent' => $post->ID,
 					'post_type' => 'attachment',
@@ -277,7 +277,7 @@ if (!class_exists("exifography")) {
 			
 			$output = array();
 			foreach ($this->fields as $key => $value) {
-				if (in_array($key,$options['exif_fields']) || in_array('all',$display)) {
+				if (in_array($key,$options['exif_fields']) || $display == 'all') {
 					if ($key == 'aperture' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = '&#402;/'.$imgmeta['image_meta'][$key];
 					elseif ($key == 'created_timestamp' && !$imgmeta['image_meta'][$key] == 0)
@@ -600,13 +600,13 @@ if (isset($exif_plugin)) {
 }
 
 // use this to manually insert the exif output in your theme
-function exifography_display_exif($fields,$imgID) {
+function exifography_display_exif($fields=null,$imgID=null) {
 	if (class_exists('exifography')) {
 		$exif = new exifography();
 		return $exif->display_exif($fields,$imgID);
 	}
 }
 // this is deprecated don't use it anymore, use exifography_display_exif() instead
-function display_exif($fields,$imgID) {
+function display_exif($fields=null,$imgID=null) {
 	return exifography_display_exif($fields,$imgID);
 }
