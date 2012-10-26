@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3
+Version: 1.1.3.1
 Author URI: http://www.kristarella.com
 */
 
@@ -103,7 +103,6 @@ if (!class_exists("exifography")) {
 				'after_block' => '</ul>',
 				'sep' => ': ',
 				'timestamp' => 'j F, Y',
-				'item_label' => 1,
 				'geo_zoom' => '2',
 				'geo_width' => '100',
 				'geo_height' => '100',
@@ -278,7 +277,7 @@ if (!class_exists("exifography")) {
 			
 			$output = array();
 			foreach ($this->fields as $key => $value) {
-				if (!empty($options['item_label']))
+				if (empty($options['item_label']))
 					$value = $value;
 				else
 					$value = '';
@@ -398,7 +397,7 @@ if (!class_exists("exifography")) {
 				add_settings_field($key, $value, array($this,'html_fields'), 'plugin_options', 'custom_html', $key);
 			}
 			add_settings_field('timestamp',__('Timestamp format', 'exifography'),array($this,'timestamp'),'plugin_options','custom_html');
-			add_settings_field('item_label',__('Show label', 'exifography'),array($this,'label'),'plugin_options','custom_html');
+			add_settings_field('item_label',__('Turn off item label', 'exifography'),array($this,'label'),'plugin_options','custom_html');
 			add_settings_field('geo_link',__('Link GEO EXIF to Google Maps', 'exifography'),array($this,'geo_link'),'plugin_options','custom_html');
 			add_settings_field('geo_img',__('Display map thumbnail instead of location coords', 'exifography'),array($this,'geo_img'),'plugin_options','custom_html');
 			add_settings_field('geo_zoom',__('Map zoom (0 is the widest, 21 is close)', 'exifography'),array($this,'geo_zoom'),'plugin_options','custom_html');
