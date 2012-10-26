@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.2.1
+Version: 1.1.3.1
 Author URI: http://www.kristarella.com
 */
 
@@ -277,6 +277,10 @@ if (!class_exists("exifography")) {
 			
 			$output = array();
 			foreach ($this->fields as $key => $value) {
+				if (empty($options['item_label']))
+					$value = $value;
+				else
+					$value = '';
 				if (in_array($key,$options['exif_fields']) || $display == 'all') {
 					if ($key == 'aperture' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = '&#402;/'.$imgmeta['image_meta'][$key];
@@ -294,11 +298,12 @@ if (!class_exists("exifography")) {
 						$exif = $imgmeta['image_meta'][$key];
 					
 					if ($exif)
-						$output[$key] = stripslashes($options['before_item']) . $value . stripslashes($options['sep']) . $exif . stripslashes($options['after_item']);
+						$output[$key] = sprintf(stripslashes($options['before_item']),$key) . $value . stripslashes($options['sep']) . $exif . stripslashes($options['after_item']);
 				}
 			}
+
 			$output = apply_filters('exifography_display_exif',$output,$post->ID,$imgID);
-			$output = stripslashes($options['before_block']) . implode('',$output) . stripslashes($options['after_block']);
+			$output = sprintf(stripslashes($options['before_block']),'wp-image-'.$imgID) . implode('',$output) . stripslashes($options['after_block']);
 			return $output;
 			endif;
 		}
@@ -392,6 +397,7 @@ if (!class_exists("exifography")) {
 				add_settings_field($key, $value, array($this,'html_fields'), 'plugin_options', 'custom_html', $key);
 			}
 			add_settings_field('timestamp',__('Timestamp format', 'exifography'),array($this,'timestamp'),'plugin_options','custom_html');
+			add_settings_field('item_label',__('Turn off item label', 'exifography'),array($this,'label'),'plugin_options','custom_html');
 			add_settings_field('geo_link',__('Link GEO EXIF to Google Maps', 'exifography'),array($this,'geo_link'),'plugin_options','custom_html');
 			add_settings_field('geo_img',__('Display map thumbnail instead of location coords', 'exifography'),array($this,'geo_img'),'plugin_options','custom_html');
 			add_settings_field('geo_zoom',__('Map zoom (0 is the widest, 21 is close)', 'exifography'),array($this,'geo_zoom'),'plugin_options','custom_html');
@@ -422,8 +428,10 @@ if (!class_exists("exifography")) {
 		// render inputs
 		function default_fields($key) {
 			$options = $this->get_options();
-			if (in_array($key,$options['exif_fields']))
-				$checked = 'checked="checked"';
+			if (!empty($options['exif_fields'])) {
+				if (in_array($key,$options['exif_fields']))
+					$checked = 'checked="checked"';
+			}
 			else
 				$checked = '';
 			echo '<input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="'.$this->exif_options.'[exif_fields][]" '.$checked.' />';
@@ -444,9 +452,17 @@ if (!class_exists("exifography")) {
 			$options = $this->get_options();
 			echo '<input type="text" id="timestamp" name="'.$this->exif_options.'[timestamp]" value="'.$options['timestamp'].'" class="regular-text code" />';
 		}
+		function label() {
+			$options = $this->get_options();
+			if(!empty($options['item_label']))
+				$checked = 'checked="checked"';
+			else
+				$checked = '';
+			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.$checked.' />';
+		}
 		function geo_link() {
 			$options = $this->get_options();
-			if($options['geo_link'])
+			if(!empty($options['geo_link']))
 				$checked = 'checked="checked"';
 			else
 				$checked = '';
@@ -454,7 +470,7 @@ if (!class_exists("exifography")) {
 		}
 		function geo_img() {
 			$options = $this->get_options();
-			if($options['geo_img'])
+			if(!empty($options['geo_img']))
 				$checked = 'checked="checked"';
 			else
 				$checked = '';
