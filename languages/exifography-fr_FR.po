@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exifography 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-10 23:10+1000\n"
-"PO-Revision-Date: 2012-11-10 23:10+1000\n"
+"POT-Creation-Date: 2012-11-10 23:11+1000\n"
+"PO-Revision-Date: 2012-11-10 23:11+1000\n"
 "Last-Translator: Kristen Symonds <kristarella@gmail.com>\n"
 "Language-Team:  <kristarella@gmail.com>\n"
 "Language: en_AU\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../exifography.php:38
 msgid "Aperture"
-msgstr ""
+msgstr "Ouverture"
 
 #: ../exifography.php:39
 msgid "Credit"
@@ -26,15 +26,15 @@ msgstr ""
 
 #: ../exifography.php:40
 msgid "Camera"
-msgstr ""
+msgstr "Appareil photo"
 
 #: ../exifography.php:41
 msgid "Caption"
-msgstr ""
+msgstr "Légende"
 
 #: ../exifography.php:42
 msgid "Taken"
-msgstr ""
+msgstr "Prise de vue"
 
 #: ../exifography.php:43
 msgid "Copyright"
@@ -42,31 +42,31 @@ msgstr ""
 
 #: ../exifography.php:44
 msgid "Exposure bias"
-msgstr ""
+msgstr "Correction d'exposition"
 
 #: ../exifography.php:45
 msgid "Flash fired"
-msgstr ""
+msgstr "Flash actif"
 
 #: ../exifography.php:46
 msgid "Focal length"
-msgstr ""
+msgstr "Focale"
 
 #: ../exifography.php:47
 msgid "ISO"
-msgstr ""
+msgstr "ISO"
 
 #: ../exifography.php:48
 msgid "Location"
-msgstr ""
+msgstr "Localisation"
 
 #: ../exifography.php:49
 msgid "Shutter speed"
-msgstr ""
+msgstr "Vitesse d'obturation"
 
 #: ../exifography.php:50
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: ../exifography.php:53
 msgid "Before EXIF block"
