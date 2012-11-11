@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.1
+Version: 1.1.3.2
 Author URI: http://www.kristarella.com
 */
 
@@ -45,6 +45,7 @@ if (!class_exists("exifography")) {
 				'flash' => __('Flash fired', 'exifography'),
 				'focal_length' => __('Focal length', 'exifography'),
 				'iso' => __('ISO', 'exifography'),
+				//'lens' => __('Lens', 'exifography'),
 				'location' => __('Location', 'exifography'),
 				'shutter_speed' => __('Shutter speed', 'exifography'),
 				'title' => __('Title', 'exifography'),
@@ -83,6 +84,10 @@ if (!class_exists("exifography")) {
 						$meta['exposure_bias'] = trim( $exif['ExposureBiasValue'] );
 					if (!empty($exif['Flash']))
 						$meta['flash'] = trim( $exif['Flash'] );
+					/*if (!empty($exif['LensMake']))
+						$meta['lens'] = trim( $exif['LensMake'] );
+					if (!empty($exif['LensModel']))
+						$meta['lens'] .= ' '.trim( $exif['LensModel'] );*/
 			
 			return $meta;
 			}
@@ -209,13 +214,13 @@ if (!class_exists("exifography")) {
 					or number_format((1 / $imgmeta['image_meta']['shutter_speed']), 1) == 1.5
 					or number_format((1 / $imgmeta['image_meta']['shutter_speed']), 1) == 1.6
 					or number_format((1 / $imgmeta['image_meta']['shutter_speed']), 1) == 2.5) {
-						$speed .= number_format((1 / $imgmeta['image_meta']['shutter_speed']), 1, '.', '') . " s";
+						$speed .= number_format((1 / $imgmeta['image_meta']['shutter_speed']), 1, '.', '') . "s";
 					}
 					else
-						$speed .= number_format((1 / $imgmeta['image_meta']['shutter_speed']), 0, '.', '') . " s";
+						$speed .= number_format((1 / $imgmeta['image_meta']['shutter_speed']), 0, '.', '') . "s";
 				}
 				else
-					$speed = $imgmeta['image_meta']['shutter_speed']." s";
+					$speed = $imgmeta['image_meta']['shutter_speed']."s";
 				
 				return $speed;
 			}
@@ -294,6 +299,13 @@ if (!class_exists("exifography")) {
 						$exif = $this->display_geo($imgmeta);
 					elseif ($key == 'shutter_speed' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = $this->pretty_shutter_speed($imgmeta);
+					 elseif ($key == 'exposure_bias' && !$imgmeta['image_meta'][$key] == 0) {
+					 	$exposure_bias_parts = explode("/", $imgmeta['image_meta'][$key]);
+					 	if ($exposure_bias_parts[0] == "0")
+					 		$exif = '';
+					 	else
+					 		$exif = $imgmeta['image_meta'][$key];
+					}
 					else
 						$exif = $imgmeta['image_meta'][$key];
 					
@@ -578,7 +590,7 @@ if (!class_exists("exifography")) {
 				delete_post_meta($post_id, '_use_exif');
 			elseif ($use_exif == 'none')
 				update_post_meta($post_id, '_use_exif', $use_exif);
-			elseif (!$use_exif == $current_data)
+			elseif ($use_exif !== $current_data)
 				update_post_meta($post_id, '_use_exif', $use_exif);
 			else
 				update_post_meta($post_id, '_use_exif', $current_data);
