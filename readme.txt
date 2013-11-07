@@ -3,8 +3,8 @@ Contributors: kristarella
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7439094
 Tags: exif, iptc, photos, photographs, photoblog
 Requires at least: 3.2
-Tested up to: 3.4.2
-Stable tag: 1.1.3.2
+Tested up to: 3.7.1
+Stable tag: 1.1.3.3
 
 Exifography displays EXIF data for images and enables import of latitude and longitude EXIF to the database.
 
@@ -24,7 +24,7 @@ Features include:
 
 == Installation ==
 
-1. Upload the Exifography folder to the `/wp-content/plugins/` directory
+1. Upload the plugin folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Visit the Exifography Options page under the WordPress Settings menu.
 1. See the [Exifography plugin page](http://www.kristarella.com/exifography/) for instructions on EXIF display.
@@ -49,6 +49,11 @@ See the above answer.
 2. Each post can have its own EXIF items displayed.
 
 == Changelog ==
+
+= 1.1.3.3 =
+* Fixed exposure bias output (to calculate out float value)
+* Fixed map size error
+* Updated code for checking options & other minor optimisations
 
 = 1.1.3.2 =
 * Fixed exposure bias output

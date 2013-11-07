@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.2
+Version: 1.1.3.3
 Author URI: http://www.kristarella.com
 */
 
@@ -102,8 +102,8 @@ if (!class_exists("exifography")) {
 		
 		function activate() {
 			$defaults = array(
-				'before_block' => '<ul class="exif">',
-				'before_item' => '<li>',
+				'before_block' => '<ul id="%s" class="exif">',
+				'before_item' => '<li class="%s">',
 				'after_item' => '</li>',
 				'after_block' => '</ul>',
 				'sep' => ': ',
@@ -182,13 +182,14 @@ if (!class_exists("exifography")) {
 				$geo_coords = $neg_lat . number_format($lat,6) . ',' . $neg_lng . number_format($lng, 6);
 				$geo_pretty_coords = $this->geo_pretty_fracs2dec($latitude) . $lat_ref . ' ' . $this->geo_pretty_fracs2dec($longitude) . $lng_ref;
 				$gmap_url = 'http://maps.google.com/maps?q=' .$geo_coords. '&ll=' .$geo_coords. '&z=11';
-				$geo_img_url = 'http://maps.googleapis.com/maps/api/staticmap?zoom='.$options['geo_zoom'].'&size=150x150&maptype=roadmap
+				$geo_img_url = 'http://maps.googleapis.com/maps/api/staticmap?zoom='.$options['geo_zoom'].'&size='.$options['geo_width'].'x'.$options['geo_height'].'&maptype=roadmap
 &markers=color:blue%7Clabel:S%7C'.$geo_coords.'&sensor=false';
+				$geo_img_html = '<img src="'.$geo_img_url.'" alt="'.$geo_pretty_coords.'" title="'.$geo_pretty_coords.'" width="'.$options['geo_width'].'" height="'.$options['geo_height'].'" style="vertical-align:top;" />';
 
 				if (array_key_exists('geo_link',$options) && array_key_exists('geo_img',$options))
-					$show_geo = '<a href="'.$gmap_url.'"><img src="'.$geo_img_url.'" alt="'.$geo_pretty_coords.'" title="'.$geo_pretty_coords.'" /></a>';
+					$show_geo = '<a href="'.$gmap_url.'">'.$geo_img_html.'</a>';
 				elseif (array_key_exists('geo_img',$options) && !array_key_exists('geo_link',$options))
-					$show_geo = '<img src="'.$geo_img_url.'" alt="'.$geo_pretty_coords.'" title="'.$geo_pretty_coords.'" />';
+					$show_geo = $geo_img_html;
 				elseif (array_key_exists('geo_link',$options) && !array_key_exists('geo_img',$options))
 					$show_geo = '<a href="'.$gmap_url.'">'.$geo_pretty_coords.'</a>';
 				else
@@ -303,8 +304,10 @@ if (!class_exists("exifography")) {
 					 	$exposure_bias_parts = explode("/", $imgmeta['image_meta'][$key]);
 					 	if ($exposure_bias_parts[0] == "0")
 					 		$exif = '';
-					 	else
-					 		$exif = $imgmeta['image_meta'][$key];
+					 	else {
+					 		$float = intval($exposure_bias_parts[0]) / intval($exposure_bias_parts[1]);
+					 		$exif = $float;
+					 	}
 					}
 					else
 						$exif = $imgmeta['image_meta'][$key];
@@ -315,9 +318,13 @@ if (!class_exists("exifography")) {
 			}
 
 			$output = apply_filters('exifography_display_exif',$output,$post->ID,$imgID);
-			$output = sprintf(stripslashes($options['before_block']),'wp-image-'.$imgID) . implode('',$output) . stripslashes($options['after_block']);
-			return $output;
 			endif;
+			if (!empty($output))
+				$output = sprintf(stripslashes($options['before_block']),'wp-image-'.$imgID) . implode('',$output) . stripslashes($options['after_block']);
+			else
+				$output = "";
+			
+			return $output;
 		}
 		
 		//render shortcode
@@ -440,21 +447,11 @@ if (!class_exists("exifography")) {
 		// render inputs
 		function default_fields($key) {
 			$options = $this->get_options();
-			if (!empty($options['exif_fields'])) {
-				if (in_array($key,$options['exif_fields']))
-					$checked = 'checked="checked"';
-			}
-			else
-				$checked = '';
-			echo '<input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="'.$this->exif_options.'[exif_fields][]" '.$checked.' />';
+			echo '<input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="'.$this->exif_options.'[exif_fields][]" '.checked( in_array($key,$options['exif_fields'] ), true, false).' />';
 		}
 		function auto_field() {
 			$options = $this->get_options();
-			if($options['auto_insert'])
-				$checked = 'checked="checked"';
-			else
-				$checked = '';
-			echo '<input id="auto_insert" type="checkbox" name="'.$this->exif_options.'[auto_insert]" '.$checked.' />';
+			echo '<input id="auto_insert" type="checkbox" name="'.$this->exif_options.'[auto_insert]" '.checked( $options['auto_insert'], true, false).' />';
 		}
 		function html_fields($key) {
 			$options = $this->get_options();
@@ -466,27 +463,15 @@ if (!class_exists("exifography")) {
 		}
 		function label() {
 			$options = $this->get_options();
-			if(!empty($options['item_label']))
-				$checked = 'checked="checked"';
-			else
-				$checked = '';
-			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.$checked.' />';
+			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.checked( $options['item_label'], true, false).' />';
 		}
 		function geo_link() {
 			$options = $this->get_options();
-			if(!empty($options['geo_link']))
-				$checked = 'checked="checked"';
-			else
-				$checked = '';
-			echo '<input id="geo_link" type="checkbox" name="'.$this->exif_options.'[geo_link]" '.$checked.' />';
+			echo '<input id="geo_link" type="checkbox" name="'.$this->exif_options.'[geo_link]" '.checked( $options['geo_link'], true, false).' />';
 		}
 		function geo_img() {
 			$options = $this->get_options();
-			if(!empty($options['geo_img']))
-				$checked = 'checked="checked"';
-			else
-				$checked = '';
-			echo '<input id="geo_img" type="checkbox" name="'.$this->exif_options.'[geo_img]" '.$checked.' />';
+			echo '<input id="geo_img" type="checkbox" name="'.$this->exif_options.'[geo_img]" '.checked( $options['geo_img'], true, false).' />';
 		}
 		function geo_zoom() {
 			$options = $this->get_options();
@@ -549,17 +534,14 @@ if (!class_exists("exifography")) {
 				$set_exif = implode(',',$options['exif_fields']);
 			else
 				$set_exif = '';
+			$set_exif = explode(',', $set_exif);
 			?>
 
 			<p><?php _e('If there is a photo attached to this post, the following details may be added to the end of the post.', 'exifography'); ?></p>
 			<ul style="padding:0 0.9em;">
 <?php
 			foreach ($this->fields as $key => $value) {
-				if(strpos($set_exif, $key) !== false)
-					$checked = 'checked="checked"';
-				else
-					$checked = '';
-			echo '<li><input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="exif_fields[]" '.$checked.' /> <label for="'.$key.'">'.$value.'</label></li>';
+				echo '<li><input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="exif_fields[]" '.checked( in_array($key, $set_exif), true, false ).' /> <label for="'.$key.'">'.$value.'</label></li>';
 			}
 ?>
 			</ul>
