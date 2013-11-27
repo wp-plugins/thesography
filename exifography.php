@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.3
+Version: 1.1.3.4
 Author URI: http://www.kristarella.com
 */
 
@@ -287,6 +287,8 @@ if (!class_exists("exifography")) {
 					$value = $value;
 				else
 					$value = '';
+				if (!array_key_exists($key, $imgmeta['image_meta']))
+					continue;
 				if (in_array($key,$options['exif_fields']) || $display == 'all') {
 					if ($key == 'aperture' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = '&#402;/'.$imgmeta['image_meta'][$key];
@@ -300,7 +302,7 @@ if (!class_exists("exifography")) {
 						$exif = $this->display_geo($imgmeta);
 					elseif ($key == 'shutter_speed' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = $this->pretty_shutter_speed($imgmeta);
-					 elseif ($key == 'exposure_bias' && !$imgmeta['image_meta'][$key] == 0) {
+					elseif ($key == 'exposure_bias' && !$imgmeta['image_meta'][$key] == 0) {
 					 	$exposure_bias_parts = explode("/", $imgmeta['image_meta'][$key]);
 					 	if ($exposure_bias_parts[0] == "0")
 					 		$exif = '';
@@ -497,7 +499,7 @@ if (!class_exists("exifography")) {
 							$output['exif_fields'][] = $field;
 					}
 				}
-				elseif ($key == 'auto_insert' || $key == 'geo_link' || $key == 'geo_img') {
+				elseif ($key == 'auto_insert' || $key == 'item_label' || $key == 'geo_link' || $key == 'geo_img') {
 					$output[$key] = 1;
 				}
 				//validate numbers			
@@ -510,7 +512,6 @@ if (!class_exists("exifography")) {
 					$output[$key] = addslashes($value);	
 			}
 			return $output;
-			//return $input;
 		}
 
 		// === EDIT POST OPTIONS === //
