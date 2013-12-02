@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: exif, iptc, photos, photographs, photoblog
 Requires at least: 3.2
 Tested up to: 3.7.1
-Stable tag: 1.1.3.4
+Stable tag: 1.1.3.5
 
 Exifography displays EXIF data for images and enables import of latitude and longitude EXIF to the database.
 
@@ -49,6 +49,9 @@ See the above answer.
 2. Each post can have its own EXIF items displayed.
 
 == Changelog ==
+
+= 1.1.3.5 =
+* Fixed location display that broke in 1.1.3.4
 
 = 1.1.3.4 =
 * Fixed warnings when exif item doesn't exist (particularly 'exposure_bias')
