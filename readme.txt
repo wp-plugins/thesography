@@ -50,6 +50,9 @@ See the above answer.
 
 == Changelog ==
 
+= 1.1.3.6 =
+* Fixed everything that broke in 1.1.3.5
+
 = 1.1.3.5 =
 * Fixed location display that broke in 1.1.3.4
 

@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.5
+Version: 1.1.3.6
 Author URI: http://www.kristarella.com
 */
 
@@ -287,7 +287,7 @@ if (!class_exists("exifography")) {
 					$value = $value;
 				else
 					$value = '';
-				if ( !array_key_exists($key, $imgmeta['image_meta']) || $key != 'location' )
+				if ( !(array_key_exists($key, $imgmeta['image_meta']) || $key == 'location' ) )
 					continue;
 				if (in_array($key,$options['exif_fields']) || $display == 'all') {
 					if ($key == 'aperture' && !$imgmeta['image_meta'][$key] == 0)
