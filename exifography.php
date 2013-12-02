@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.4
+Version: 1.1.3.5
 Author URI: http://www.kristarella.com
 */
 
@@ -287,21 +287,13 @@ if (!class_exists("exifography")) {
 					$value = $value;
 				else
 					$value = '';
-				if (!array_key_exists($key, $imgmeta['image_meta']))
+				if ( !array_key_exists($key, $imgmeta['image_meta']) || $key != 'location' )
 					continue;
 				if (in_array($key,$options['exif_fields']) || $display == 'all') {
 					if ($key == 'aperture' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = '&#402;/'.$imgmeta['image_meta'][$key];
 					elseif ($key == 'created_timestamp' && !$imgmeta['image_meta'][$key] == 0)
 						$exif = date($options['timestamp'],$imgmeta['image_meta']['created_timestamp']);
-					elseif ($key == 'flash')
-						$exif = $this->flash_fired($imgmeta);
-					elseif ($key == 'focal_length' && !$imgmeta['image_meta'][$key] == 0)
-						$exif = $imgmeta['image_meta'][$key] . __('mm','exifography');
-					elseif ($key == 'location')
-						$exif = $this->display_geo($imgmeta);
-					elseif ($key == 'shutter_speed' && !$imgmeta['image_meta'][$key] == 0)
-						$exif = $this->pretty_shutter_speed($imgmeta);
 					elseif ($key == 'exposure_bias' && !$imgmeta['image_meta'][$key] == 0) {
 					 	$exposure_bias_parts = explode("/", $imgmeta['image_meta'][$key]);
 					 	if ($exposure_bias_parts[0] == "0")
@@ -311,6 +303,14 @@ if (!class_exists("exifography")) {
 					 		$exif = $float;
 					 	}
 					}
+					elseif ($key == 'flash')
+						$exif = $this->flash_fired($imgmeta);
+					elseif ($key == 'focal_length' && !$imgmeta['image_meta'][$key] == 0)
+						$exif = $imgmeta['image_meta'][$key] . __('mm','exifography');
+					elseif ($key == 'location')
+						$exif = $this->display_geo($imgmeta);
+					elseif ($key == 'shutter_speed' && !$imgmeta['image_meta'][$key] == 0)
+						$exif = $this->pretty_shutter_speed($imgmeta);
 					else
 						$exif = $imgmeta['image_meta'][$key];
 					
