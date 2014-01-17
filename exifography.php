@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.6
+Version: 1.1.3.7
 Author URI: http://www.kristarella.com
 */
 
@@ -279,7 +279,7 @@ if (!class_exists("exifography")) {
 			}
 			
 			$imgmeta = wp_get_attachment_metadata($imgID);
-			if ($imgmeta) :
+			if (!empty($imgmeta['image_meta'])) :
 			
 			$output = array();
 			foreach ($this->fields as $key => $value) {
@@ -299,8 +299,18 @@ if (!class_exists("exifography")) {
 					 	if ($exposure_bias_parts[0] == "0")
 					 		$exif = '';
 					 	else {
+					 		if (intval($exposure_bias_parts[0]) > 0)
+					 			$exif = '+';
+					 		else
+					 			$exif = '';
 					 		$float = intval($exposure_bias_parts[0]) / intval($exposure_bias_parts[1]);
-					 		$exif = $float;
+					 		if (is_int($float))
+					 			$exif .= $float.__('EV','exifography');
+					 		elseif ($exposure_bias_parts[0] > intval($exposure_bias_parts[1]))
+					 			$exif .= substr($float, 0, 3);
+					 		else
+					 			$exif .= intval($exposure_bias_parts[0])."/".intval($exposure_bias_parts[1]).__('EV','exifography');
+					 		
 					 	}
 					}
 					elseif ($key == 'flash')
@@ -425,8 +435,8 @@ if (!class_exists("exifography")) {
 			add_settings_field('geo_width',__('Map width', 'exifography'),array($this,'geo_width'),'plugin_options','custom_html');
 			add_settings_field('geo_height',__('Map height', 'exifography'),array($this,'geo_height'),'plugin_options','custom_html');
 			
-			wp_enqueue_style( 'exif_admin_style', WP_PLUGIN_URL . '/' . str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . 'css/admin.css' );
-			wp_enqueue_script('exif_admin_js',WP_PLUGIN_URL . '/' . str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . 'js/admin.js',array('jquery'));
+			wp_enqueue_style( 'exif_admin_style', plugins_url( 'css/admin.css' , __FILE__ ) );
+			wp_enqueue_script('exif_admin_js', plugins_url( 'js/admin.js' , __FILE__ ), array('jquery'));
 		}
 		
 		// render options sections
@@ -551,6 +561,10 @@ if (!class_exists("exifography")) {
 
 		//saves the meta box options as a custom field called _use_exif
 		function save_postdata($post_id) {
+		
+			// Check if our nonce is set.
+			if ( ! isset( $_POST['myplugin_inner_custom_box_nonce'] ) )
+				return $post_id;
 			
 			// verify this came from our screen and with proper authorization,
 			// because save_post can be triggered at other times
