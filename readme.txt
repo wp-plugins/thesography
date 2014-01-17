@@ -51,7 +51,7 @@ See the above answer.
 == Changelog ==
 
 = 1.1.3.7 =
-* Fixed warnings on line 290 and 561
+* Fixed warnings on line 290, 452 and 561
 * Updated output of exposure bias
 * Added Russian translation files
 * Changed URLs for CSS & JS files to fix https issue

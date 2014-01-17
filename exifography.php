@@ -435,8 +435,8 @@ if (!class_exists("exifography")) {
 			add_settings_field('geo_width',__('Map width', 'exifography'),array($this,'geo_width'),'plugin_options','custom_html');
 			add_settings_field('geo_height',__('Map height', 'exifography'),array($this,'geo_height'),'plugin_options','custom_html');
 			
-			wp_enqueue_style( 'exif_admin_style', plugins_url( 'css/admin.css' , __FILE__ ) );
-			wp_enqueue_script('exif_admin_js', plugins_url( 'js/admin.js' , __FILE__ ), array('jquery'));
+			wp_enqueue_style( 'exif_admin_style', WP_PLUGIN_URL . '/' . str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . 'css/admin.css' );
+			wp_enqueue_script('exif_admin_js',WP_PLUGIN_URL . '/' . str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . 'js/admin.js',array('jquery'));
 		}
 		
 		// render options sections
@@ -459,7 +459,10 @@ if (!class_exists("exifography")) {
 		// render inputs
 		function default_fields($key) {
 			$options = $this->get_options();
-			echo '<input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="'.$this->exif_options.'[exif_fields][]" '.checked( in_array($key,$options['exif_fields'] ), true, false).' />';
+			$checked = '';
+			if (!empty($options['exif_fields']))
+				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			echo '<input id="exif-field-'.$key.'" value="'.$key.'" type="checkbox" name="'.$this->exif_options.'[exif_fields][]" '.$checked.' />';
 		}
 		function auto_field() {
 			$options = $this->get_options();
@@ -475,15 +478,24 @@ if (!class_exists("exifography")) {
 		}
 		function label() {
 			$options = $this->get_options();
-			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.checked( $options['item_label'], true, false).' />';
+			$checked = '';
+			if (!empty($options['exif_fields']))
+				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.$checked.' />';
 		}
 		function geo_link() {
 			$options = $this->get_options();
-			echo '<input id="geo_link" type="checkbox" name="'.$this->exif_options.'[geo_link]" '.checked( $options['geo_link'], true, false).' />';
+			$checked = '';
+			if (!empty($options['exif_fields']))
+				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			echo '<input id="geo_link" type="checkbox" name="'.$this->exif_options.'[geo_link]" '.$checked.' />';
 		}
 		function geo_img() {
 			$options = $this->get_options();
-			echo '<input id="geo_img" type="checkbox" name="'.$this->exif_options.'[geo_img]" '.checked( $options['geo_img'], true, false).' />';
+			$checked = '';
+			if (!empty($options['exif_fields']))
+				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			echo '<input id="geo_img" type="checkbox" name="'.$this->exif_options.'[geo_img]" '.$checked.' />';
 		}
 		function geo_zoom() {
 			$options = $this->get_options();
