@@ -4,7 +4,7 @@ Plugin Name: Exifography
 Plugin URI: http://www.kristarella.com/exifography
 Description: (Formerly Thesography) Displays EXIF data for images uploaded with WordPress and enables import of latitude and longitude EXIF to the database upon image upload.
 Author: kristarella
-Version: 1.1.3.7
+Version: 1.1.3.8
 Author URI: http://www.kristarella.com
 */
 
@@ -299,18 +299,13 @@ if (!class_exists("exifography")) {
 					 	if ($exposure_bias_parts[0] == "0")
 					 		$exif = '';
 					 	else {
-					 		if (intval($exposure_bias_parts[0]) > 0)
-					 			$exif = '+';
-					 		else
-					 			$exif = '';
 					 		$float = intval($exposure_bias_parts[0]) / intval($exposure_bias_parts[1]);
 					 		if (is_int($float))
-					 			$exif .= $float.__('EV','exifography');
-					 		elseif ($exposure_bias_parts[0] > intval($exposure_bias_parts[1]))
-					 			$exif .= substr($float, 0, 3);
+					 			$exif = sprintf("%+d%s", $float, __('EV','exifography'));
+					 		elseif ($float <= -1 || $float >= 1)
+					 			$exif = sprintf("%+.1f%s", $float, __('EV','exifography'));
 					 		else
-					 			$exif .= intval($exposure_bias_parts[0])."/".intval($exposure_bias_parts[1]).__('EV','exifography');
-					 		
+					 			$exif = sprintf("%+d%s%d%s", intval($exposure_bias_parts[0]), "/", intval($exposure_bias_parts[1]), __('EV','exifography'));
 					 	}
 					}
 					elseif ($key == 'flash')
@@ -466,7 +461,8 @@ if (!class_exists("exifography")) {
 		}
 		function auto_field() {
 			$options = $this->get_options();
-			echo '<input id="auto_insert" type="checkbox" name="'.$this->exif_options.'[auto_insert]" '.checked( $options['auto_insert'], true, false).' />';
+			$checked = isset($options['auto_insert']) ? checked( $options['auto_insert'], true, false) : false;
+			echo '<input id="auto_insert" type="checkbox" name="'.$this->exif_options.'[auto_insert]" '.$checked.' />';
 		}
 		function html_fields($key) {
 			$options = $this->get_options();
@@ -478,23 +474,17 @@ if (!class_exists("exifography")) {
 		}
 		function label() {
 			$options = $this->get_options();
-			$checked = '';
-			if (!empty($options['exif_fields']))
-				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			$checked = isset($options['item_label']) ? checked( $options['item_label'], true, false) : false;
 			echo '<input id="item_label" type="checkbox" name="'.$this->exif_options.'[item_label]" '.$checked.' />';
 		}
 		function geo_link() {
 			$options = $this->get_options();
-			$checked = '';
-			if (!empty($options['exif_fields']))
-				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			$checked = isset($options['geo_link']) ? checked( $options['geo_link'], true, false) : false;
 			echo '<input id="geo_link" type="checkbox" name="'.$this->exif_options.'[geo_link]" '.$checked.' />';
 		}
 		function geo_img() {
 			$options = $this->get_options();
-			$checked = '';
-			if (!empty($options['exif_fields']))
-				$checked = checked( in_array($key,$options['exif_fields'] ), true, false);
+			$checked = isset($options['geo_img']) ? checked( $options['geo_img'], true, false) : false;
 			echo '<input id="geo_img" type="checkbox" name="'.$this->exif_options.'[geo_img]" '.$checked.' />';
 		}
 		function geo_zoom() {
@@ -575,7 +565,7 @@ if (!class_exists("exifography")) {
 		function save_postdata($post_id) {
 		
 			// Check if our nonce is set.
-			if ( ! isset( $_POST['myplugin_inner_custom_box_nonce'] ) )
+			if ( ! isset( $_POST['exifography_noncename'] ) )
 				return $post_id;
 			
 			// verify this came from our screen and with proper authorization,
